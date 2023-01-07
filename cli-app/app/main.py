@@ -42,8 +42,13 @@ def file_handling(file_path, re_pattern, grep_pattern, bpf_filter):
 
         elif grep_pattern != "":
 
-            output = subprocess.check_output("grep " + grep_pattern + " " + file_path, shell=True).decode("utf-8")
-            output = str(output)
+            try:
+                output = subprocess.check_output("grep " + grep_pattern + " " + file_path, shell=True).decode("utf-8")
+            except:
+                output = ""
+            else:
+                output = str(output)
+
 
         else:
             with open(file_path, "r") as file:
