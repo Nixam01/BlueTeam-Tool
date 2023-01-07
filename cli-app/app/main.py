@@ -14,12 +14,7 @@ import shutil
 
 #requesty fastAPI
 
-#log_file = open('Databases/'''tutaj log jaki chcemy analizować''', 'a')
-#con = sqlite3.connect('Databases/)
-#cur = con.cursor()
-'''cur.execute(
-    CREATE TABLE IF NOT EXISTS app_events (date_time DATETIME, command Varchar(255), user_id Varchar(10), path Varchar(255)))
-'''
+
 
 '''
 @click.command()
@@ -102,14 +97,7 @@ def application():
 @click.option('--grep_pattern', default="")
 @click.option('--bpf_filter', default="")
 def read_file(file_path, re_pattern, grep_pattern, bpf_filter):
-    now = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-    #log_file.write(now + ':   ')
 
-    user_id = os.getuid()
-    events = (now, "read_file", user_id, str(file_path))
-    #cur.execute("insert into app_events values (?, ?, ?, ?)", events)
-    #con.commit()
-    output = ""
     for pth in file_path:
         if os.path.isfile(pth):
             output = file_handling(pth, re_pattern, grep_pattern, bpf_filter)
@@ -119,18 +107,6 @@ def read_file(file_path, re_pattern, grep_pattern, bpf_filter):
                 for name in files:
                     output = file_handling(os.path.join(root, name), re_pattern, grep_pattern, bpf_filter)
                     click.echo(output)
-
-    #con.close()
-    #log_file.write("\n" + " read_file: " + str(output) + "\n\n")
-    #log_file.close()
-
-
-@application.command()
-@click.option('--file_path', multiple=True, type=click.Path(exists=True))
-@click.option('--rules', multiple=True)
-@click.option('--firewall', multiple=False, required=False, default="", help="ip:port")
-@click.option('--console', multiple=False, required=False, default="", help="ip:port")
-
 
 @application.command()
 @click.option('--action', multiple=False, help="Action you want to perform (one of netconfig)")
