@@ -171,7 +171,7 @@ def agent(action, agent_host, interface, capture_filter, timeout, file_number, c
             json_str = str(r.content)
             json_str = json_str[3:-2]
             list = json_str.split(',')
-            file_name = "../database/downloads/logs/" + list[int(file)-1][4:-1]
+            file_name = "../database/downloads_from_agent/logs/" + list[int(file)-1][4:-1]
 
             parameters = {"nr": file}
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
