@@ -1,5 +1,6 @@
 FROM python:3.10-slim-bullseye
+COPY . /code
 WORKDIR /code
-COPY agent.py agent.py
+RUN pip3 install -r libraries.txt
 EXPOSE 5000
-CMD echo "This is a test"
+CMD python3 /code/agent.py
