@@ -1,12 +1,12 @@
 import click
-#from datetime import datetime
+from datetime import datetime
 import json
 import os
 import requests
 
+from cliapp.tools.fileHandling import file_handling
 
-#requesty fastAPI
-
+# requesty fastAPI
 
 
 '''
@@ -22,11 +22,13 @@ def filename(file):
 
 '''
 
+
 def scan_file(file_path, rule):
     detection_rules = __import__('detection-rules')
     method = getattr(detection_rules, rule)
     result = method(file_path)
     return result
+
 
 def process_output(output, firewall, console):
     if output[0] == "remote" and console != "":
@@ -35,21 +37,24 @@ def process_output(output, firewall, console):
         r = requests.post(f'http://{console}/', data=json.dumps(pload), headers=headers)
 
     if output[1] and firewall != "":
-        if output[2].find("suspicious ip") > -1 or output[2].find("suspicious number of ips") > -1 or output[2].find("untrusted ports") > -1:
+        if output[2].find("suspicious ip") > -1 or output[2].find("suspicious number of ips") > -1 or output[2].find(
+                "untrusted ports") > -1:
             pload = {'rule': "BLOCK", 'value': str(output[3])}
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
             r = requests.post(f'http://{firewall}/', data=json.dumps(pload), headers=headers)
 
+
 @click.group()
 def application():
     pass
+
+
 @application.command()
 @click.option('--file_path', multiple=True, type=click.Path(exists=True))
 @click.option('--re_pattern', default="")
 @click.option('--grep_pattern', default="")
 @click.option('--bpf_filter', default="")
 def read_file(file_path, re_pattern, grep_pattern, bpf_filter):
-
     for pth in file_path:
         if os.path.isfile(pth):
             output = file_handling(pth, re_pattern, grep_pattern, bpf_filter)
@@ -60,6 +65,7 @@ def read_file(file_path, re_pattern, grep_pattern, bpf_filter):
                     output = file_handling(os.path.join(root, name), re_pattern, grep_pattern, bpf_filter)
                     click.echo(output)
 
+
 @application.command()
 @click.option('--action', multiple=False, help="Action you want to perform (one of netconfig)")
 @click.option('--agent_host', multiple=False, help="ip:port")
@@ -68,7 +74,6 @@ def read_file(file_path, re_pattern, grep_pattern, bpf_filter):
 @click.option('--timeout', multiple=False, help="Time of capturing")
 @click.option('--file_number', multiple=True, help="Number of file to download")
 @click.option('--command', multiple=False, help="Command to execute")
-
 def agent(action, agent_host, interface, capture_filter, timeout, file_number, command):
     if action == 'netconfig':
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
@@ -102,11 +107,12 @@ def agent(action, agent_host, interface, capture_filter, timeout, file_number, c
             json_str = str(r.content)
             json_str = json_str[3:-2]
             list = json_str.split(',')
-            file_name = "Files_application/pcaps/" + list[int(file)-1][4:-1]
+            file_name = "Files_application/pcaps/" + list[int(file) - 1][4:-1]
 
             parameters = {"nr": file}
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-            response = requests.get(f'http://{agent_host}/download-pcap', params=parameters, headers=headers, stream=True)
+            response = requests.get(f'http://{agent_host}/download-pcap', params=parameters, headers=headers,
+                                    stream=True)
             if response.status_code == 200:
                 with open(file_name, 'wb') as f:
                     f.write(response.content)
@@ -118,11 +124,12 @@ def agent(action, agent_host, interface, capture_filter, timeout, file_number, c
             json_str = str(r.content)
             json_str = json_str[3:-2]
             list = json_str.split(',')
-            file_name = "../database/downloads_from_agent/logs/" + list[int(file)-1][4:-1]
+            file_name = "../database/downloads_from_agent/logs/" + list[int(file) - 1][4:-1]
 
             parameters = {"nr": file}
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-            response = requests.get(f'http://{agent_host}/download-log', params=parameters, headers=headers, stream=True)
+            response = requests.get(f'http://{agent_host}/download-log', params=parameters, headers=headers,
+                                    stream=True)
             if response.status_code == 200:
                 with open(file_name, 'wb') as f:
                     f.write(response.content)
