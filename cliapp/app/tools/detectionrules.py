@@ -9,7 +9,7 @@ def detect_ip(file_path):
     condition = False
     ips = []
     found_ips = []
-    with open("../database/ip_blacklist.txt", 'r') as f:
+    with open("../database/files/ip_blacklist.txt", 'r') as f:
         for line in f:
             ips.append(line.strip())
 
@@ -30,6 +30,7 @@ def detect_ip(file_path):
             if re.search(ip, output):
                 condition = True
                 found_ips.append(ip)
+        print(found_ips)
 
     if condition:
         action_alert = "remote"

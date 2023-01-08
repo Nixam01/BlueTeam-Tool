@@ -3,21 +3,6 @@ import json
 import requests
 from tools.detectionrules import *
 
-
-'''
-@click.command()
-@click.option('-f' , '--file', help='File to analyse', type=str)
-def filename(file):
-    extension = file.split('.')[-1]
-    if (extension in ['txt', 'pcap', 'evtx', 'json', 'xml']):
-        print('Supported extension')
-    else:
-        print('Unsupported extension')
-
-
-'''
-
-
 def file_handling(file_path, re_pattern, grep_pattern, bpf_filter):
     output = ""
 
@@ -221,7 +206,7 @@ def loaddetectionrules(file_path, rule):
     if rule == 'detect_ip':
         for pth in file_path:
             if os.path.isfile(pth):
-                output = detect_ip(file_path)
+                output = detect_ip(str(file_path)[2:-3])
                 click.echo(output)
             elif os.path.isdir(pth):
                 for root, directories, files in os.walk(pth, topdown=False):
