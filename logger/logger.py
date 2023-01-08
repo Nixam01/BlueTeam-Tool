@@ -1,6 +1,7 @@
 import os
 import requests
 import logging
+import uvicorn
 from fastapi import FastAPI
 
 from datetime import datetime
@@ -25,4 +26,4 @@ def send_data():
     return data
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=5001, debug=False)
+    uvicorn.run(app, host="127.0.0.1", port=8003)
