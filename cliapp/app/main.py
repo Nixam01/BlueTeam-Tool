@@ -100,11 +100,17 @@ def read_file(file_path, re_pattern, grep_pattern, bpf_filter):
         if os.path.isfile(pth):
             output = file_handling(pth, re_pattern, grep_pattern, bpf_filter)
             click.echo(output)
+            f = open('../database/log.txt', 'a')
+            f.write(str(datetime.now().strftime("%d-%m-%Y_%H-%M-%S")) + ' cliapp' + '\n' + output + '\n\n')
+            f.close()
         elif os.path.isdir(pth):
             for root, directories, files in os.walk(pth, topdown=False):
                 for name in files:
                     output = file_handling(os.path.join(root, name), re_pattern, grep_pattern, bpf_filter)
                     click.echo(output)
+                    f = open('../database/log.txt', 'a')
+                    f.write(str(datetime.now().strftime("%d-%m-%Y_%H-%M-%S")) + ' cliapp' + '\n' + output + '\n\n')
+                    f.close()
 
 
 @application.command()
@@ -121,25 +127,40 @@ def agent(action, agent_host, interface, capture_filter, timeout, file_number, c
         r = requests.get(f'http://{agent_host}/netconfig', headers=headers)
         result = str(r.content).replace('\\n', '\n').replace('\\t', '\t')
         click.echo(result)
+        f = open('../database/log.txt', 'a')
+        f.write(str(datetime.now().strftime("%d-%m-%Y_%H-%M-%S")) + ' agent' + '\n' + result + '\n\n')
+        f.close()
 
     elif action == 'capture':
         pload = {"interface": interface, "filter": capture_filter, "timeout": str(timeout)}
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         response = requests.post(f'http://{agent_host}/capture', data=json.dumps(pload), headers=headers, stream=True)
-        file_name = "../database/pcaps/" + str(datetime.now().strftime("%d-%m-%Y_%H-%M-%S")) + ".pcap"
+        time_now = str(datetime.now().strftime("%d-%m-%Y_%H-%M-%S"))
+        file_name = "../database/downloads_from_agent/pcaps/" + time_now + ".pcap"
         if response.status_code == 200:
             with open(file_name, 'wb') as f:
                 f.write(response.content)
+            f = open('../database/log.txt', 'a')
+            f.write(str(datetime.now().strftime("%d-%m-%Y_%H-%M-%S"))
+                    + ' cliapp' + '\n' + 'file ' + time_now
+                    + '.pcap dowloaded to folder cliapp/database/downloads_from_agent/pcaps ' + '\n\n')
+            f.close()
 
     elif action == 'list_pcaps':
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         r = requests.get(f'http://{agent_host}/list-pcaps', headers=headers)
         click.echo(r.content)
+        f = open('../database/log.txt', 'a')
+        f.write(str(datetime.now().strftime("%d-%m-%Y_%H-%M-%S")) + ' agent' + '\n' + str(r.content) + '\n\n')
+        f.close()
 
     elif action == 'list_logs':
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         r = requests.get(f'http://{agent_host}/list-logs', headers=headers)
         click.echo(r.content)
+        f = open('../database/log.txt', 'a')
+        f.write(str(datetime.now().strftime("%d-%m-%Y_%H-%M-%S")) + ' agent' + '\n' + str(r.content) + '\n\n')
+        f.close()
 
     elif action == 'download_pcap':
         for file in file_number:
@@ -148,7 +169,7 @@ def agent(action, agent_host, interface, capture_filter, timeout, file_number, c
             json_str = str(r.content)
             json_str = json_str[3:-2]
             list = json_str.split(',')
-            file_name = "Files_application/pcaps/" + list[int(file) - 1][4:-1]
+            file_name = "../database/downloads_from_agent/pcaps/" + list[int(file) - 1][4:-1]
 
             parameters = {"nr": file}
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
@@ -157,6 +178,10 @@ def agent(action, agent_host, interface, capture_filter, timeout, file_number, c
             if response.status_code == 200:
                 with open(file_name, 'wb') as f:
                     f.write(response.content)
+                f = open('../database/log.txt', 'a')
+                f.write(str(datetime.now().strftime("%d-%m-%Y_%H-%M-%S")) + ' agent' + '\n'
+                        + 'downloaded pcap to /database/downloads_from_agent/pcaps folder' + '\n\n')
+                f.close()
 
     elif action == 'download_log':
         for file in file_number:
@@ -174,15 +199,26 @@ def agent(action, agent_host, interface, capture_filter, timeout, file_number, c
             if response.status_code == 200:
                 with open(file_name, 'wb') as f:
                     f.write(response.content)
+                f = open('../database/log.txt', 'a')
+                f.write(str(datetime.now().strftime("%d-%m-%Y_%H-%M-%S")) + ' agent' + '\n'
+                        + 'downloaded log to /database/downloads_from_agent/logs folder' + '\n\n')
+                f.close()
     elif action == 'command':
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         payload = {"command": command}
         r = requests.post(f'http://{agent_host}/command', headers=headers, data=json.dumps(payload))
         result = str(r.content).replace('\\n', '\n').replace('\\t', '\t')
         click.echo(result)
+        f = open('../database/log.txt', 'a')
+        f.write(str(datetime.now().strftime("%d-%m-%Y_%H-%M-%S")) + ' agent' + '\n' + result + '\n\n')
+        f.close()
 
     else:
         click.echo("Invalid action")
+        f = open('../database/log.txt', 'a')
+        f.write(str(datetime.now().strftime("%d-%m-%Y_%H-%M-%S") + ' agent' + '\n' + 'Invalid action' + '\n\n'))
+        f.close()
+
 
 
 if __name__ == '__main__':
