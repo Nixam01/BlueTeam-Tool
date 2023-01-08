@@ -1,34 +1,28 @@
-import logging
+import os
 import requests
+import logging
+from fastapi import FastAPI
 
-# Set up the logger
-logger = logging.getLogger("remote_logger")
-logger.setLevel(logging.INFO)
+from datetime import datetime
 
-# Set up the handler for the logger
-handler = logging.StreamHandler()
-handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
-logger.addHandler(handler)
 
-# Set the URL of the log receiver
-url = "http://localhost:8080/log"
 
-# Define a custom logging handler that sends log messages to the log receiver
-class RemoteLoggingHandler(logging.Handler):
-    def emit(self, record):
-        # Create the log message
-        log_entry = self.format(record)
+def log(data, function_name):
+    file_name = function_name + '-' + datetime.now().strftime("%d-%m-%Y-%H:%M:%S")+'.txt'
+    path = '/var/log/logs/'
+    fp = path+file_name
+    command = 'touch '+ fp
+    os.system(command)
+    with open(fp, 'w') as f:
+        f.write(data)
 
-        # Send the POST request to the log receiver
-        try:
-            response = requests.post(url, json={"message": log_entry})
-            response.raise_for_status()
-        except Exception:
-            self.handleError(record)
+app = FastAPI()
 
-# Add the custom logging handler to the logger
-remote_handler = RemoteLoggingHandler()
-logger.addHandler(remote_handler)
+@app.route('/send', methods=['POST'])
+def send_data():
+    data = requests.data.decode('utf-8')
+    print(data)
+    return data
 
-# Test the logger
-logger.info("This is a test log message")
+if __name__ == '__main__':
+    app.run(host='localhost', port=5001, debug=False)
