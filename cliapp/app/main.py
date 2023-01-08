@@ -6,6 +6,8 @@ import requests
 import re
 import pyshark
 import subprocess
+import logging
+from adapter.agent_model import *
 
 # requesty fastAPI
 
@@ -187,4 +189,5 @@ def agent(action, agent_host, interface, capture_filter, timeout, file_number, c
 
 if __name__ == '__main__':
     application()
+
     print('CLI Application Started...')
