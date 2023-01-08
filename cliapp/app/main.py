@@ -1,15 +1,7 @@
 import click
-from datetime import datetime
 import json
-import os
 import requests
-import re
-import pyshark
-import subprocess
-import logging
-from adapter.agent_model import *
-
-# requesty fastAPI
+from tools.detectionrules import *
 
 
 '''
@@ -186,6 +178,42 @@ def agent(action, agent_host, interface, capture_filter, timeout, file_number, c
     else:
         click.echo("Invalid action")
 
+@application.command()
+@click.option('--file_path', multiple=True, type=click.Path(exists=True))
+@click.option('--rule', multiple=False, help="detect_ip or detect_words or detect_anomaly")
+def loaddetectionrules(file_path, rule):
+    if rule == 'detect_ip':
+        for pth in file_path:
+            if os.path.isfile(pth):
+                output = detect_ip(file_path)
+                click.echo(output)
+            elif os.path.isdir(pth):
+                for root, directories, files in os.walk(pth, topdown=False):
+                    for name in files:
+                        output = detect_ip(name)
+                        click.echo(output)
+    elif rule == 'detects_words':
+        for pth in file_path:
+            if os.path.isfile(pth):
+                output = detect_ip(file_path)
+                click.echo(output)
+            elif os.path.isdir(pth):
+                for root, directories, files in os.walk(pth, topdown=False):
+                    for name in files:
+                        output = detect_words(name)
+                        click.echo(output)
+    elif rule == 'detect_anomaly':
+        for pth in file_path:
+            if os.path.isfile(pth):
+                output = detect_anomaly(file_path)
+                click.echo(output)
+            elif os.path.isdir(pth):
+                for root, directories, files in os.walk(pth, topdown=False):
+                    for name in files:
+                        output = detect_anomaly(name)
+                        click.echo(output)
+    else:
+        click.echo("Invalid action")
 
 if __name__ == '__main__':
     application()
