@@ -156,3 +156,9 @@ Opis reguł dostępnych do wyboru:
 * detect_ip - detekcja regułowa po ip znajdującym się w pliku *ip_blacklist.txt*. W przypadku wykrycia w badanym pliku pcap, określonego adresu IP aplikacja ma za zadanie wysłać alert.
 * detect_words - detekcja regułowa po wyrazach znajdujących się w pliku *word_blacklist.txt*. W przypadku wykrycia w badnym pliku pcap, określonego wyrazu aplikacja ma za zadanie wysłać alert.
 * detect_anomaly - detekcja oparta na sprawdzeniu w przechwyconym ruchu sieciowym niezaufanych portów komunikacji.
+
+## Link do repozytorium GitLab
+
+```shell
+git clone https://gitlab-stud.elka.pw.edu.pl/mjjk/2022z_pythonblueteam.git
+```
