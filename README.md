@@ -4,16 +4,7 @@
 
 ## Informacje ogólne
 
-Projekt został wykonany w ramach laboratorium nr 1 z przedmiotu Kryminalistyka Cyfrowa w semestrze 2022Z.
-
-
-## Twórcy
-
-* Jan Ignasiak (311001)
-* Kacper Małkiewicz (311032)
-* Marcin Latawiec (311031)
-* Jakub Romanek (311065)
-
+Projekt został wykonany w ramach przedmiotu Kryminalistyka Cyfrowa w semestrze 2022Z.
 
 ## Elementy systemu
 
